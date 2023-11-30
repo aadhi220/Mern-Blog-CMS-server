@@ -10,7 +10,8 @@ router.post("/users/login",userController.login)
 
 // Admin routes 
 router.post("/category/add",jwtMiddleware,categoryController.addCategory)
-router.get("/category/all",jwtMiddleware,categoryController.getCategory)
+router.get("/category/all",jwtMiddleware,categoryController.getAllCategory)
+router.delete("/category/delete/:id",jwtMiddleware,categoryController.deleteCategory)
 
 
 

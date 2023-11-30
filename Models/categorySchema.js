@@ -2,12 +2,12 @@ const mongoose = require('mongoose')
 
 
 const categorySchema = new mongoose.Schema({
-categoryName:{
+category:{
     type: String,
     required: true,
 },
-date:{
-    type: Date,
+created_at:{
+    type: String,
     required: true,
 }
 })

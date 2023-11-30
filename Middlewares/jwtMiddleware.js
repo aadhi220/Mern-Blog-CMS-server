@@ -4,8 +4,10 @@ const jwtMiddleware = (req, res, next) => {
   console.log("Inside jwtMiddleware");
 
   // Check if the Authorization header exists
-  if (!req.headers.authorization) {
-    return res.status(401).json("Authorization header missing");
+  const authHeader = req.headers['authorization'];
+  if (!authHeader) {
+    console.log(req.headers['authorization']);
+     res.status(401).json("Authorization header missing");
   }
 
   const token = req.headers.authorization.split(" ")[1];
