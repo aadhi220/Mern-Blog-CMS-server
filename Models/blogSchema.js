@@ -29,6 +29,18 @@ userId: {
   userName:{
     type: String,
     required: true,
+  },
+  dateCreated:{
+    type: Date,
+    required: true,
+  },
+  likes:{
+    type: Number,
+    required: true,
+  },
+  views:{
+    type: Number,
+    required: true,
   }
 
 

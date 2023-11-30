@@ -6,6 +6,10 @@ categoryName:{
     type: String,
     required: true,
 },
+date:{
+    type: Date,
+    required: true,
+}
 })
 
 const category =mongoose.model("category",categorySchema)
