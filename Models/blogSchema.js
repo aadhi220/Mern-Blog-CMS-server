@@ -26,21 +26,21 @@ userId: {
     type: String,
     required: true,
   },
-  userName:{
+  username:{
     type: String,
     required: true,
   },
-  dateCreated:{
-    type: Date,
+  created_at:{
+    type: String,
     required: true,
   },
   likes:{
     type: Number,
-    required: true,
+    
   },
   views:{
     type: Number,
-    required: true,
+    
   }
 
 

@@ -19,10 +19,13 @@ const fileFilter = (req, file, callback) => {
     }
 };
 
-// Updated multer configuration for multiple images
-const multerConfig = multer({
+// Create a multer instance
+const multerInstance = multer({
     storage,
     fileFilter
-}).array('images', 10); // 'images' is the field name for the array of images, and 10 is the maximum number of files allowed.
+});
+
+// Use the array method on the multer instance
+const multerConfig = multerInstance.array('images', 10); // 'images' is the field name for the array of images, and 10 is the maximum number of files allowed.
 
 module.exports = multerConfig;

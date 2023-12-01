@@ -21,7 +21,8 @@ router.patch("/users/setAuthor",jwtMiddleware,userController.setAuthor)
 
 
 router.post("/blogs/add",jwtMiddleware,multerConfig,blogController.addBlog)
-router.post("/blogs/all",jwtMiddleware,blogController.getAllBlog)
+router.get("/blogs/all",jwtMiddleware,blogController.getAllBlog)
+router.delete("/blogs/delete/:id",jwtMiddleware,blogController.deleteBlog)
 
 
 
