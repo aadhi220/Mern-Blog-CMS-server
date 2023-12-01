@@ -37,11 +37,22 @@ exports.getAllCategory = async (req, res) => {
 exports.deleteCategory = async (req, res) => {
   const { id } = req.params;
   try {
-    const deleteCategory = await Category.findByIdAndDelete({ _id: id });
-    await deleteCategory.delete();
+    const deleteCategory = await Category.findByIdAndDelete(id);
+
+    if (!deleteCategory) {
+      // If the category with the specified ID is not found
+      return res.status(404).json({ error: 'Category not found' });
+    }
+
     res.status(200).json(deleteCategory);
   } catch (error) {
-    res.status(401).json(error);
-    console.log("error deleting Project backend");
+    console.error('Error deleting category:', error);
+
+    if (error.name === 'CastError') {
+      // If the provided ID is not a valid ObjectId
+      return res.status(400).json({ error: 'Invalid category ID' });
+    }
+
+    res.status(500).json({ error: 'Internal server error' });
   }
 };

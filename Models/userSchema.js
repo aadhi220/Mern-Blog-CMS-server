@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 
 
+
 const userSchema = new mongoose.Schema({
 
 username:{
@@ -30,7 +31,13 @@ isAdmin:{
 profilePic:{
     type: String,
     
+},
+created_at:{
+    type:String,
+    
+    
 }
+
 
 
 
