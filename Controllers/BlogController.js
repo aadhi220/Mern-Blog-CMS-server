@@ -51,3 +51,18 @@ exports.deleteBlog =async (req,res)=>{
         res.status(500).json({message:error})
     }
 }
+
+exports.setViewCount =async (req,res)=>{
+    const {id,count} = req.body;
+    try{
+        const setView = await Blog.findByIdAndUpdate(
+            {_id:id},
+            { $set: { views:count } }, // Use $set to update only the specified field
+            { new: true }
+          );
+        
+        res.status(200).json(setView);
+    }catch(error){
+        res.status(500).json({message:error})
+    }
+}
