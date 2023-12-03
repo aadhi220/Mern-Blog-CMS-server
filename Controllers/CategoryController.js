@@ -3,7 +3,7 @@ const Category = require("../Models/categorySchema");
 exports.addCategory = async (req, res) => {
   console.log("inside addcategory", req.body);
   const { category, created_at } = req.body;
-//   console.log(category, created_at);
+  //   console.log(category, created_at);
 
   try {
     const existingCategory = await Category.findOne({ category });
@@ -41,18 +41,18 @@ exports.deleteCategory = async (req, res) => {
 
     if (!deleteCategory) {
       // If the category with the specified ID is not found
-      return res.status(404).json({ error: 'Category not found' });
+      return res.status(404).json({ error: "Category not found" });
     }
 
     res.status(200).json(deleteCategory);
   } catch (error) {
-    console.error('Error deleting category:', error);
+    console.error("Error deleting category:", error);
 
-    if (error.name === 'CastError') {
+    if (error.name === "CastError") {
       // If the provided ID is not a valid ObjectId
-      return res.status(400).json({ error: 'Invalid category ID' });
+      return res.status(400).json({ error: "Invalid category ID" });
     }
 
-    res.status(500).json({ error: 'Internal server error' });
+    res.status(500).json({ error: "Internal server error" });
   }
 };
