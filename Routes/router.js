@@ -11,7 +11,7 @@ router.post("/users/login",userController.login)
 
 // Admin routes 
 router.post("/category/add",jwtMiddleware,categoryController.addCategory)
-router.get("/category/all",jwtMiddleware,categoryController.getAllCategory)
+router.get("/category/all",categoryController.getAllCategory)
 router.delete("/category/delete/:id",jwtMiddleware,categoryController.deleteCategory)
 router.get("/users/all",jwtMiddleware,userController.getAllUsers)
 router.get("/users/user/:id",jwtMiddleware,userController.getUserByid)
@@ -22,6 +22,8 @@ router.patch("/users/setAuthor",jwtMiddleware,userController.setAuthor)
 
 router.post("/blogs/add",jwtMiddleware,multerConfig,blogController.addBlog)
 router.get("/blogs/all",blogController.getAllBlog)
+router.get("/blogs/getAuthorBlog",blogController.getAuthorBlog)
+router.get("/blogs/get/:id",jwtMiddleware,blogController.getBlogById)
 router.delete("/blogs/delete/:id",jwtMiddleware,blogController.deleteBlog)
 router.patch("/blogs/viewCount",blogController.setViewCount)
 
