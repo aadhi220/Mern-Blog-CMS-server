@@ -23,6 +23,7 @@ router.patch("/users/setAuthorReq",jwtMiddleware,multerConfig,userController.set
 
 
 router.post("/blogs/add",jwtMiddleware,multerConfig,blogController.addBlog)
+router.patch("/blogs/edit",jwtMiddleware,multerConfig,blogController.editBlog)
 router.get("/blogs/all",blogController.getAllBlog)
 router.get("/blogs/getAuthorBlog",blogController.getAuthorBlog)
 router.get("/blogs/get/:id",jwtMiddleware,blogController.getBlogById)
