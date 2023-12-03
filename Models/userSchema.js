@@ -40,7 +40,13 @@ created_at:{
     type:String,
     
     
+},
+job:{
+    type: String,
+
 }
+
+
 
 
 
