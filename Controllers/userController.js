@@ -1,7 +1,77 @@
 const users = require("../Models/userSchema");
 const jwt = require("jsonwebtoken");
-const nodemailer=require('nodemailer')
-const mailgen=require('mailgen')
+require('dotenv').config();
+const nodemailer = require('nodemailer');
+const mailgen = require('mailgen');
+
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.EMAIL_USER,
+    pass: process.env.EMAIL_PASSWORD,
+  },
+});
+
+const mailGenerator = new mailgen({
+  theme: 'cerberus', // Use the 'cerberus' theme for a clean and modern look
+  product: {
+    name: 'RateLab',
+    link: process.env.SITE_URL,
+    // Add other product details as needed
+  },
+});
+
+exports.setAuthor = async (req, res) => {
+  const { isAuthor, id, username, email } = req.body;
+
+  try {
+    const user = await users.findByIdAndUpdate(
+      { _id: id },
+      { $set: { isAuthor } },
+      { new: true }
+    );
+
+    const introMessage = isAuthor
+      ? `Congratulations! You are now part of the RateLab author community. Share your thoughts and insights with our readers! <br/><br/><div style="text-align: center;"><a href="${process.env.DASHBOARD_URL}" style="display: inline-block; padding: 15px 25px; font-size: 18px; background-color: #4CAF50; color: #ffffff; text-decoration: none; border-radius: 5px;">Go to Dashboard</a></div>`
+      : 'Your author status on RateLab has been revoked. If you have any concerns, please contact the admin.';
+
+    const outroMessage = `Explore more on RateLab: ${process.env.SITE_URL}`;
+
+    const emailBody = {
+      body: {
+        name: username,
+        intro: introMessage,
+        outro: outroMessage,
+        // Add other email content as needed
+      },
+    };
+
+    const emailOptions = {
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: 'Author Status Update on RateLab',
+      html: mailGenerator.generate(emailBody),
+    };
+
+    // Use async/await and wrap in a try-catch block for nodemailer operations
+    try {
+      await transporter.sendMail(emailOptions);
+      console.log('Email sent successfully.');
+    } catch (emailError) {
+      console.error('Error sending email:', emailError);
+      throw new Error('Email sending failed');
+    }
+
+    return res.status(200).json(user);
+  } catch (error) {
+    console.error("Error updating user:", error);
+    return res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+
+
+
 exports.register = async (req, res) => {
   console.log("inside register", req.body);
   const { username, email, password, created_at } = req.body;
@@ -23,7 +93,12 @@ exports.register = async (req, res) => {
         job: "",
       });
       await newUser.save();
+
+  
       return res.status(200).json(newUser);
+
+
+    
     }
   } catch (error) {
     res.status(401).json("Error creating user", error);
@@ -50,16 +125,27 @@ exports.login = async (req, res) => {
 };
 
 exports.getAllUsers = async (req, res) => {
-  const query = {
-    authorRequest: true,
+const {temp}=req.params;
+   
+   const query = {
+     authorRequest: true,
   };
+  console.log("temp",temp);
 
-  try {
+ if(temp==="author"){ try {
     const allUsers = await users.find(query);
     return res.status(200).json(allUsers);
   } catch (error) {
     console.error("Error getting users:", error);
     return res.status(500).json({ error: "Internal server error" });
+  }}else {
+    try {
+      const allUsers = await users.find();
+      return res.status(200).json(allUsers);
+    } catch (error) {
+      console.error("Error getting users:", error);
+      return res.status(500).json({ error: "Internal server error" });
+    }
   }
 };
 
@@ -74,29 +160,6 @@ exports.getUserByid = async (req, res) => {
   }
 };
 
-exports.setAuthor = async (req, res) => {
-  const { isAuthor, id ,username ,email } = req.body;
-
-  let config ={
-    service:'gmail',
-    auth: {
-
-    }
-  }
-
-  try {
-    const user = await users.findByIdAndUpdate(
-      { _id: id },
-      { $set: { isAuthor } }, // Use $set to update only the specified field
-      { new: true }
-    );
-
-    return res.status(200).json(user);
-  } catch (error) {
-    console.error("Error updating user:", error);
-    return res.status(500).json({ error: "Internal server error" });
-  }
-};
 
 exports.deleteUser = async (req, res) => {
   const { id } = req.params;
