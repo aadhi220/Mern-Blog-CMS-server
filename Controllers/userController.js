@@ -13,6 +13,7 @@ exports.register = async (req, res) => {
         email,
         password,
         isAuthor: false,
+        authorRequest: false,
         isAdmin: false,
         profilePic: "",
         created_at
