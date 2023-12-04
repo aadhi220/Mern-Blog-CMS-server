@@ -3,6 +3,7 @@ const router=new express.Router();
 const userController = require('../Controllers/userController')
 const categoryController = require('../Controllers/CategoryController')
 const blogController = require('../Controllers/BlogController')
+const mailController = require('../Controllers/mailController')
 
 const jwtMiddleware = require('../Middlewares/jwtMiddleware')
 const multerConfig =require('../Middlewares/multerMiddleware')
@@ -30,6 +31,8 @@ router.get("/blogs/get/:id",jwtMiddleware,blogController.getBlogById)
 router.delete("/blogs/delete/:id",jwtMiddleware,blogController.deleteBlog)
 router.patch("/blogs/viewCount",blogController.setViewCount)
 
+router.post("/email/add",mailController.addEmail)
+router.post("/email/sent",mailController.sendMail)
 
 
 module.exports = router;
