@@ -2,7 +2,7 @@ const multer = require("multer");
 
 const storage = multer.diskStorage({
   destination: (req, file, callback) => {
-    callback(null, "./uploads"); // Adjust the destination path
+    callback(null, "./uploads"); 
   },
   filename: (req, file, callback) => {
     const filename = `image-${Date.now()}-${file.originalname}`;
@@ -14,12 +14,13 @@ const fileFilter = (req, file, callback) => {
   if (
     file.mimetype === "image/png" ||
     file.mimetype === "image/jpeg" ||
-    file.mimetype === "image/jpg"
+    file.mimetype === "image/jpg" ||
+    file.mimetype === "image/webp"
   ) {
     callback(null, true);
   } else {
     callback(null, false);
-    return callback(new Error("Only png, jpeg, jpg files are allowed!"));
+    return callback(new Error("Only png, jpeg, jpg, and webp files are allowed!"));
   }
 };
 
@@ -29,7 +30,6 @@ const multerInstance = multer({
   fileFilter,
 });
 
-// Use the array method on the multer instance
-const multerConfig = multerInstance.array("images", 10); // 'images' is the field name for the array of images, and 10 is the maximum number of files allowed.
 
+const multerConfig = multerInstance.array("images", 10);
 module.exports = multerConfig;
