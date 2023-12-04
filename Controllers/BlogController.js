@@ -13,6 +13,7 @@ exports.addBlog = async (req, res) => {
     created_at,
     likes,
     views,
+    approved,
   } = req.body;
   const images = req.files.map((file) => file.filename);
 
@@ -28,6 +29,7 @@ exports.addBlog = async (req, res) => {
       created_at: created_at,
       likes: likes,
       views: views,
+      approved: approved,
     });
 
     await newBlog.save();
@@ -41,7 +43,7 @@ exports.addBlog = async (req, res) => {
 exports.editBlog = async (req, res) => {
   console.log("inside editBlog", req.body);
 
-  const { title, caption, category, content, created_at, blogId } = req.body;
+  const { title, caption, category, content, created_at, blogId ,approved} = req.body;
   const images = req.files.map((file) => file.filename);
 
   try {
@@ -56,6 +58,7 @@ exports.editBlog = async (req, res) => {
     updatedBlog.category = category;
     updatedBlog.content = content;
     updatedBlog.created_at = created_at;
+    updatedBlog.approved = approved
     // Update images only if they are provided in the request
     if (images.length > 0) {
       updatedBlog.images = images;

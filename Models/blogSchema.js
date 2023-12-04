@@ -41,9 +41,12 @@ userId: {
   views:{
     type: Number,
     
+  },
+  approved:{
+    type: Boolean,
+    default: false,
+
   }
-
-
 })
 
 const blogs =mongoose.model("blogs",blogSchema)
