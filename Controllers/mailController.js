@@ -26,15 +26,15 @@ exports.sendMail = async (req, res) => {
   
     try {
       // Assuming you want to get all subscribers' emails
-      const subscribers = await users.find({}, 'email');
-      
+      const subscribers = await users.find({ author: username }, 'email');
+
       if (!subscribers || subscribers.length === 0) {
-        return res.status(400).json({ error: 'No subscribers found' });
+        return res.status(400).json({ error: 'No subscribers found for the specified author' });
       }
   
       const emails = subscribers.map(subscriber => subscriber.email);
   
-      const introMessage = `${username} has added a new blog - ${title} <br/><br/><div style="text-align: center;"><a href="${process.env.SITE_URL}" style="display: inline-block; padding: 15px 25px; font-size: 18px; background-color: #4CAF50; color: #ffffff; text-decoration: none; border-radius: 5px;">Go to Dashboard</a></div>`;
+      const introMessage = `${username} has added a new blog - ${title} <br/><br/><div style="text-align: center;"><a href="${process.env.SITE_URL}" style="display: inline-block; padding: 15px 25px; font-size: 18px; background-color: #4CAF50; color: #ffffff; text-decoration: none; border-radius: 5px;">Go to Ratelab.com</a></div>`;
   
       const outroMessage = `Explore more on RateLab: ${process.env.SITE_URL}`;
   
@@ -72,7 +72,7 @@ exports.sendMail = async (req, res) => {
 
 exports.addEmail = async (req, res) => {
     console.log("inside addEmail", req.body);
-    const { email, created_at } = req.body;
+    const { email, created_at ,author } = req.body;
     //   console.log(category, created_at);
   
     try {
@@ -83,6 +83,7 @@ exports.addEmail = async (req, res) => {
         const newEmail = new users({
           email: email,
           created_at: created_at,
+          author: author,
         });
         await newEmail.save();
         return res.status(200).json("email added successfully");
