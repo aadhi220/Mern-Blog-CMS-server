@@ -3,6 +3,7 @@ const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const nodemailer = require("nodemailer");
 const mailgen = require("mailgen");
+const bcrypt =require("bcrypt");
 
 const transporter = nodemailer.createTransport({
   service: "gmail",
@@ -20,6 +21,69 @@ const mailGenerator = new mailgen({
     // Add other product details as needed
   },
 });
+
+
+exports.register = async (req, res) => {
+  console.log('inside register', req.body);
+  const { username, email, password, created_at } = req.body;
+
+  try {
+    const existingUser = await users.findOne({ email: email });
+
+    if (existingUser) {
+      return res.status(406).json('User already exists');
+    } else {
+      // Hash the password before saving to the database
+      const hashedPassword = await bcrypt.hash(password, 10);
+
+      const newUser = new users({
+        username,
+        email,
+        password: hashedPassword,
+        isAuthor: false,
+        authorRequest: false,
+        isAdmin: false,
+        profilePic: '',
+        created_at: created_at,
+        job: '',
+      });
+
+      await newUser.save();
+
+      return res.status(200).json(newUser);
+    }
+  } catch (error) {
+    res.status(401).json('Error creating user');
+  }
+};
+
+exports.login = async (req, res) => {
+  console.log('inside login', req.body);
+  const { email, password } = req.body;
+
+  try {
+    const existingUser = await users.findOne({ email });
+
+    if (existingUser) {
+      // Compare the provided password with the hashed password in the database
+      const isPasswordValid = await bcrypt.compare(password, existingUser.password);
+
+      if (isPasswordValid) {
+        const token = jwt.sign({ userId: existingUser._id }, 'blog123');
+        res.status(200).json({
+          existingUser,
+          token,
+        });
+      } else {
+        return res.status(404).json('Invalid credentials');
+      }
+    } else {
+      return res.status(404).json('Invalid credentials');
+    }
+  } catch (error) {
+    res.status(401).json('Error creating user', error);
+  }
+};
 
 exports.setAuthor = async (req, res) => {
   const { isAuthor, id, username, email } = req.body;
@@ -69,53 +133,6 @@ exports.setAuthor = async (req, res) => {
   }
 };
 
-exports.register = async (req, res) => {
-  console.log("inside register", req.body);
-  const { username, email, password, created_at } = req.body;
-  console.log("created_at", created_at);
-  try {
-    const existingUser = await users.findOne({ email: email });
-    if (existingUser) {
-      return res.status(406).json("User already exists");
-    } else {
-      const newUser = new users({
-        username,
-        email,
-        password,
-        isAuthor: false,
-        authorRequest: false,
-        isAdmin: false,
-        profilePic: "",
-        created_at: created_at,
-        job: "",
-      });
-      await newUser.save();
-
-      return res.status(200).json(newUser);
-    }
-  } catch (error) {
-    res.status(401).json("Error creating user", error);
-  }
-};
-
-exports.login = async (req, res) => {
-  console.log("inside login", req.body);
-  const { email, password } = req.body;
-  try {
-    const existingUser = await users.findOne({ email, password });
-    if (existingUser) {
-      const token = jwt.sign({ userId: existingUser._id }, "blog123");
-      res.status(200).json({
-        existingUser,
-        token,
-      });
-    } else {
-      return res.status(404).json("Invalid credentials");
-    }
-  } catch (error) {
-    res.status(401).json("Error creating user", error);
-  }
-};
 
 exports.getAllUsers = async (req, res) => {
   const { temp } = req.params;

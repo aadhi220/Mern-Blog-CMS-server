@@ -22,18 +22,21 @@ const mailGenerator = new mailgen({
 });
 
 exports.sendMail = async (req, res) => {
-    const { title, username } = req.body;
-  
-    try {
-      // Assuming you want to get all subscribers' emails
-      const subscribers = await users.find({ author: username }, 'email');
+  const { title, username } = req.body;
+  let subscribers = [];
 
-      if (!subscribers || subscribers.length === 0) {
-        return res.status(400).json({ error: 'No subscribers found for the specified author' });
-      }
-  
-      const emails = subscribers.map(subscriber => subscriber.email);
-  
+  try {
+    // Get subscribers for the specific author
+    subscribers = await users.find({ author: username }, 'email');
+
+    // If no subscribers found for the specific author, get subscribers for "all"
+    if (!subscribers || subscribers.length === 0) {
+      subscribers = await users.find({ author: "all" }, 'email');
+    }
+
+    // Extract emails from subscribers
+    const emails = subscribers.map(subscriber => subscriber.email);
+
       const introMessage = `${username} has added a new blog - ${title} <br/><br/><div style="text-align: center;"><a href="${process.env.SITE_URL}" style="display: inline-block; padding: 15px 25px; font-size: 18px; background-color: #4CAF50; color: #ffffff; text-decoration: none; border-radius: 5px;">Go to Ratelab.com</a></div>`;
   
       const outroMessage = `Explore more on RateLab: ${process.env.SITE_URL}`;
