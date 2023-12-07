@@ -1,5 +1,4 @@
 const users = require("../Models/SubscribeSchema");
-const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const nodemailer = require("nodemailer");
 const mailgen = require("mailgen");
@@ -98,5 +97,53 @@ exports.addEmail = async (req, res) => {
         .json({ error: "Error adding email", details: error.message });
     }
   };
+
+  // exports.sendForgotMail = async (req, res) => {
+  //   const  email  = req.body;
+  // let client = ""
+  
+  //   try {
+  
+  //     client = await users.find({ email: email });
+  
+
+  //     if (!client) {
+           
+  //     }
+
+  //       const introMessage = `Hai ${client.username}<br/><br/><p> ${client.password} is your current password . pleace update your password after login </p> <div style="text-align: center;"><a href="${process.env.SITE_URL}" style="display: inline-block; padding: 15px 25px; font-size: 18px; background-color: #4CAF50; color: #ffffff; text-decoration: none; border-radius: 5px;">Go to Ratelab.com</a></div>`;
+    
+  //       const outroMessage = `Explore more on RateLab: ${process.env.SITE_URL}`;
+    
+  //       const emailBody = {
+  //         body: {
+  //           name:"",
+  //           intro: introMessage,
+  //           outro: outroMessage,
+  //           // Add other email content as needed
+  //         },
+  //       };
+    
+  //       const emailOptions = {
+  //         from: process.env.EMAIL_USER,
+  //         to: emails.join(","),
+  //         subject: "RateLab newsletter",
+  //         html: mailGenerator.generate(emailBody),
+  //       };
+    
+  //       // Use async/await and wrap in a try-catch block for nodemailer operations
+  //       try {
+  //         await transporter.sendMail(emailOptions);
+  //         console.log("Email sent successfully.");
+  //         return res.status(200).json({ message: "Email sent successfully" });
+  //       } catch (emailError) {
+  //         console.error("Error sending email:", emailError);
+  //         throw new Error("Email sending failed");
+  //       }
+  //     } catch (error) {
+  //       console.error("Error retrieving subscribers:", error);
+  //       return res.status(500).json({ error: "Internal server error" });
+  //     }
+  //   };
   
 
