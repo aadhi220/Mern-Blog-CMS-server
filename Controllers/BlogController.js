@@ -14,6 +14,7 @@ exports.addBlog = async (req, res) => {
     likes,
     views,
     approved,
+    profilePic
   } = req.body;
   const images = req.files.map((file) => file.filename);
 
@@ -30,6 +31,7 @@ exports.addBlog = async (req, res) => {
       likes: likes,
       views: views,
       approved: approved,
+      profilePic:profilePic,
     });
 
     await newBlog.save();
@@ -58,7 +60,7 @@ exports.editBlog = async (req, res) => {
     updatedBlog.category = category;
     updatedBlog.content = content;
     updatedBlog.created_at = created_at;
-    updatedBlog.approved = approved
+    updatedBlog.approved = approved;
     // Update images only if they are provided in the request
     if (images.length > 0) {
       updatedBlog.images = images;

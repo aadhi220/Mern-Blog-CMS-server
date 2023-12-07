@@ -46,7 +46,12 @@ userId: {
     type: Boolean,
     default: false,
 
+  },
+  profilePic:{
+    type:String,
+    required:true
   }
+
 })
 
 const blogs =mongoose.model("blogs",blogSchema)
