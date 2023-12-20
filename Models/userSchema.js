@@ -44,6 +44,10 @@ created_at:{
 job:{
     type: String,
 
+},
+subscribed:{
+    type:Array,
+    default:[]
 }
 
 

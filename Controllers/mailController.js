@@ -1,4 +1,5 @@
 const users = require("../Models/SubscribeSchema");
+const userDb = require('../Models/userSchema')
 require("dotenv").config();
 const nodemailer = require("nodemailer");
 const mailgen = require("mailgen");
@@ -19,6 +20,55 @@ const mailGenerator = new mailgen({
     // Add other product details as needed
   },
 });
+
+
+
+exports.addEmail = async (req, res) => {
+  console.log("inside addEmail", req.body);
+  const { email, created_at, author, userId } = req.body;
+
+  try {
+  
+  
+      const subscriber = await userDb.findById({ _id: userId });
+
+      if (subscriber) {
+
+        if (subscriber.subscribed.includes(author)) {
+          return res.status(400).json("already subscribed");
+        }
+        try {
+          // Update the 'subscribed' field by adding the 'author'>
+          subscriber.subscribed.push(author);
+
+          // Save the updated document
+          await subscriber.save();
+
+          const newEmail = new users({
+            email: email,
+            created_at: created_at,
+            author: author,
+          });
+
+          await newEmail.save();
+
+          return res.status(200).json("Email added successfully");
+        } catch (error) {
+          // Pass 'res' as an argument to the error response
+          console.log(error.message);
+          return res
+            .status(500)
+            .json({ error: "Error adding subscriber", details: error.message });
+        }
+      }
+  
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({ error: "Error adding email", details: error.message });
+  }
+};
 
 exports.sendMail = async (req, res) => {
   const { title, username } = req.body;
@@ -72,31 +122,6 @@ exports.sendMail = async (req, res) => {
   };
   
 
-exports.addEmail = async (req, res) => {
-    console.log("inside addEmail", req.body);
-    const { email, created_at ,author } = req.body;
-    //   console.log(category, created_at);
-  
-    try {
-      const existingEmail = await users.findOne({ email });
-      if (existingEmail) {
-        return res.status(406).json("Email already exists");
-      } else {
-        const newEmail = new users({
-          email: email,
-          created_at: created_at,
-          author: author,
-        });
-        await newEmail.save();
-        return res.status(200).json("email added successfully");
-      }
-    } catch (error) {
-      console.error(error);
-      res
-        .status(500)
-        .json({ error: "Error adding email", details: error.message });
-    }
-  };
 
   // exports.sendForgotMail = async (req, res) => {
   //   const  email  = req.body;
